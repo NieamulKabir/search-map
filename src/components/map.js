@@ -1,20 +1,34 @@
 import React from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import "leaflet/dist/leaflet.css"
-import L from "leaflet"
+import markLocation from "leaflet"
+import SearchViewLocation from './SearchViewLocation';
 
-const icon = L.icon({
+// const icon = markLocation.icon({
+//     iconUrl: "./redmark.png",
+//     iconSize: [30, 30]
+// })
+const icon1 = markLocation.icon({
     iconUrl: "./redmark.png",
     iconSize: [30, 30]
 })
+const icon2 = markLocation.icon({
+    iconUrl: "./black.png",
+    iconSize: [30, 30]
+})
 
-const Map = (props) => {
-    const { selectPosition } = props
-    console.log(selectPosition.latitude, selectPosition.longitude);
+
+const Map = ({ selectLocation }) => {
+
+
+
+    console.log(selectLocation);
+    console.log(selectLocation.latitude, selectLocation.longitude);
+
 
     return (
         <div className='h-[100%] w-[100%]'>
-            <MapContainer style={{ width: "100%", height: "100%" }} center={[23.72331476, 90.40461625]} icon={icon} zoom={10} scrollWheelZoom={false}>
+            <MapContainer className='w-screen h-screen' center={[23.823730671721023, 90.36402004477637]} icon={selectLocation === "Admin" ? icon2 : icon1} zoom={10} scrollWheelZoom={false}>
                 <TileLayer
 
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -22,14 +36,15 @@ const Map = (props) => {
                 />
 
                 {
-                    selectPosition && (
-                        <Marker position={[selectPosition?.latitude, selectPosition?.longitude]} icon={icon}>
+                    selectLocation && (
+                        <Marker position={[selectLocation?.latitude, selectLocation?.longitude]} icon={selectLocation === "Admin" ? icon2 : icon1}>
                             <Popup>
 
                             </Popup>
                         </Marker>
                     )
                 }
+                <SearchViewLocation selectLocation={selectLocation} />
             </MapContainer>
         </div>
     );

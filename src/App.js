@@ -1,25 +1,24 @@
 
 import { useState } from 'react';
 import './App.css';
-import Map from './components/map';
+import Map from './components/Map';
 import Search from './components/Search';
 
 
 
 function App() {
 
-const[selectPosition,setSelectPosition]=useState('')
-// console.log(selectPosition);
+const[selectLocation,setSelectLocation]=useState('')
 
   return (
     <div className="">
 
-      <div className='mx-auto flex flex-row h-screen w-screen '>
-        <div className='w-[40%]'>
-          <Search selectPosition={selectPosition} setSelectPosition={setSelectPosition} />
+      <div className='mx-auto flex flex-row w-screen '>
+        <div className='w-[38%]'>
+          <Search selectLocation={selectLocation} setSelectLocation={setSelectLocation} />
         </div>
-        <div className='w-[60%] h-full' >
-          <Map selectPosition={selectPosition} />
+        <div className='w-[62%] h-full' >
+          <Map selectLocation={selectLocation} />
         </div>
 
       </div>
