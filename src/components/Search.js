@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useDarkMode } from '../utils/useDarkMode';
+import { FaMoon, FaSun } from "react-icons/fa";
+import LocationDetails from './LocationDetails';
 
 const Search = ({ selectLocation, setSelectLocation }) => {
-    const [mapData, setMapData] = useState([])
-    const [inputText, setInputText] = useState(mapData)
+    // custom hook for darkmood 
+    const [isDarkMode, toggleDarkMode] = useDarkMode();
 
-    const { city, address, area, postCode, uCode, pType } = selectLocation
+    const [mapData, setMapData] = useState([]);
+    const [inputText, setInputText] = useState(mapData); //get input field value
 
+    // fetch query data 
     useEffect(() => {
         const fetchData = async () => {
             let queryString = "";
@@ -21,28 +26,32 @@ const Search = ({ selectLocation, setSelectLocation }) => {
         fetchData()
             .catch(console.error);
 
-
     }, [inputText])
 
-
-    console.log(mapData);
-    console.log(inputText);
-
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     // setInputText('')
-
-    // }
-
+    // set individual location and clear Search result 
     const handleInput = (place) => {
         setSelectLocation(place)
         setInputText('')
 
     }
     return (
-        <div className='pt-2 px-4 '>
-            <h1 className='text-xl font-bold pb-6'><span>Bari</span><span className='text-green-500'>Koi</span> </h1>
+        <div className='pt-2 px-4  dark:text-white '>
+            <div className='flex justify-between'>
+
+                <h1 className='text-xl font-bold pb-6'><span>Bari</span><span className='text-green-500'>Koi</span> </h1>
+                <h1>
+
+                    {/* theme controller */}
+                    <div className='items-center flex md:pr-10'>
+                        <span className='px-2 text-slate-700 dark:text-slate-200'> <FaMoon /></span>
+                        {
+                            !isDarkMode ? <input type="checkbox" className="toggle bg-green-600" defaultChecked onChange={toggleDarkMode} /> : <input type="checkbox" className="toggle bg-green-600" onChange={toggleDarkMode} />
+
+                        }
+                        <span className='px-2 text-slate-700 dark:text-slate-200'><FaSun /></span>
+                    </div>
+                </h1>
+            </div>
 
             {/* <form className='shadow-gray-400' onSubmit={handleSubmit}>
                 <input
@@ -79,53 +88,37 @@ const Search = ({ selectLocation, setSelectLocation }) => {
 
             </form> */}
             <div>
+
                 <input
                     type="search"
                     placeholder="Search Location"
-                    className="input input-bordered border-2 border-green-300 w-full shadow-gray-400"
+                    className="input input-bordered border-4 dark:text-black border-green-300 w-full shadow-gray-400"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                 />
-                {/* <h1 key={place?.id}>
-                    <button
-                        onClick={() => handleInput(place)}
-                    >
-                        <li className='py-1 flex items-center'>
-                            <div>
-                                <img className='h-6 w-6' src="./black.png" alt="" />
-                            </div>
-                            <div>
-                                <p>{place?.address}</p>
-                            </div>
-                        </li>
-                    </button>
-
-                </h1> */}
-                <div className=''>
+                <div className=' dark:my-8 rounded-lg'>
                     <div className='py-1 '>
                         {
                             mapData?.map(place => {
                                 return (
-                                    <div className='' key={place?.id}>
+                                    <div className='dark:bg-gray-700 mx-4 my-6 rounded-lg' key={place?.id}>
                                         <button className='py-3'
                                             onClick={() => handleInput(place)}
                                         >
                                             <div className='flex items-center'>
-                                                <div>
-                                                    <img className='h-6 w-6 mr-4' src="./black.png" alt="" />
+                                                <div className='dark:text-white dark:bg-white dark:ml-2 dark:rounded-full dark:items-center'>
+                                                    <img className='h-6 w-6 mx-1 my-1  ' src="./black.png" alt="" />
                                                 </div>
                                                 <div className='ml-2'>
-                                                    <p className='text-start text-xl'>{place?.address?.split(",",1)}</p>
+                                                    <p className='text-start text-xl'>{place?.address?.split(",", 1)}</p>
                                                     <p className='text-start font-light'>{place?.address},{place?.area},{place?.city}</p>
                                                     <p className='text-start text-xs py-1 text-gray-400 '><span className='bg-gray-100 w-12 text-gray-400 text-center'>District:</span>  {place?.city}</p>
-                                                    <p  className='text-start text-xs py-1  text-gray-400 '><span className='bg-gray-100'>{place?.pType}</span> <span className='bg-gray-100'>{place?.uCode}</span></p>
+                                                    <p className='text-start text-xs py-1  text-gray-400 '><span className='bg-gray-100'>{place?.pType}</span> <span className='bg-gray-100'>{place?.uCode}</span></p>
                                                 </div>
-                                            </div> 
-
+                                            </div>
                                         </button>
-                                        <hr />
+                                        <hr className='' />
                                     </div>
-                                    
                                 )
                             })
                         }
@@ -134,24 +127,7 @@ const Search = ({ selectLocation, setSelectLocation }) => {
                 </div>
             </div>
             <div>
-                {
-                    selectLocation && (
-                        <div className="card  bg-base-100 shadow-xl">
-                            <div className="card-body">
-                                <h2 className=" text-2xl">
-                                    {
-                                        address?.split(",", 1)
-                                    }
-                                </h2>
-                                <p>{address},{area},{city}</p>
-                                <p>District: {city}</p>
-                                <p>Postcode: {postCode}</p>
-                                <p className='bg-gray-100 w-12 text-gray-400 text-center'>{pType}</p>
-                                <p className='mt-2'>Place Code : <span className='bg-gray-100 w-14 text-gray-400 text-center'>{uCode}</span></p>
-
-                            </div>
-                        </div>)
-                }
+                <LocationDetails selectLocation={selectLocation} />
 
             </div>
 
